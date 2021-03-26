@@ -117,7 +117,7 @@ extension SKPaymentQueue {
                     self.lock.unlock()
                     
                     self.downstreamLock.lock()
-                    _ = next.receive(completion: .failure(error))
+                    next.receive(completion: .failure(error))
                     self.downstreamLock.unlock()
                 }
             )
@@ -196,7 +196,8 @@ extension SKPaymentQueue {
         init(didUpdateTransactions: @escaping ([SKPaymentTransaction]) -> Void,
              didRemoveTransactions: @escaping ([SKPaymentTransaction]) -> Void,
              didUpdateDownloads: @escaping ([SKDownload]) -> Void,
-             didFail: @escaping (Swift.Error) -> Void) {
+             didFail: @escaping (Swift.Error) -> Void
+        ) {
             self.didUpdateTransactions = didUpdateTransactions
             self.didRemoveTransactions = didRemoveTransactions
             self.didUpdateDownloads = didUpdateDownloads
@@ -205,7 +206,8 @@ extension SKPaymentQueue {
     
         func paymentQueue(
             _ queue: SKPaymentQueue,
-            updatedTransactions transactions: [SKPaymentTransaction]) {
+            updatedTransactions transactions: [SKPaymentTransaction]
+        ) {
             didUpdateTransactions(transactions)
         }
     
@@ -213,32 +215,38 @@ extension SKPaymentQueue {
     
         func paymentQueue(
             _ queue: SKPaymentQueue,
-            removedTransactions transactions: [SKPaymentTransaction]) {
+            removedTransactions transactions: [SKPaymentTransaction]
+        ) {
             didRemoveTransactions(transactions)
         }
     
         func paymentQueue(
             _ queue: SKPaymentQueue,
-            restoreCompletedTransactionsFailedWithError error: Error) {
+            restoreCompletedTransactionsFailedWithError error: Error
+        ) {
             didFail(error)
         }
     
         func paymentQueueRestoreCompletedTransactionsFinished(
-            _ queue: SKPaymentQueue) { }
+            _ queue: SKPaymentQueue
+        ) { }
     
         func paymentQueue(
             _ queue: SKPaymentQueue,
-            updatedDownloads downloads: [SKDownload]) {
+            updatedDownloads downloads: [SKDownload]
+        ) {
             didUpdateDownloads(downloads)
         }
     
         func paymentQueue(
             _ queue: SKPaymentQueue,
             shouldAddStorePayment payment: SKPayment,
-            for product: SKProduct) -> Bool { true }
+            for product: SKProduct
+        ) -> Bool { true }
     
         func paymentQueueDidChangeStorefront(
-            _ queue: SKPaymentQueue) { }
+            _ queue: SKPaymentQueue
+        ) { }
     }
 }
 
