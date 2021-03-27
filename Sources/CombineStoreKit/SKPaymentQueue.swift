@@ -7,18 +7,18 @@ import StoreKit
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension SKPaymentQueue {
     
-    public var updatedTransactionsPublisher: TransactionsPublisher {
-        TransactionsPublisher(queue: self, desire: .updates)
+    public var updatedTransactionsPublisher: SKPaymentQueue.Publisher {
+        Publisher(queue: self, desire: .updates)
     }
     
-    public var removedTransactionsPublisher: TransactionsPublisher {
-        TransactionsPublisher(queue: self, desire: .deletions)
+    public var removedTransactionsPublisher: SKPaymentQueue.Publisher {
+        Publisher(queue: self, desire: .deletions)
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension SKPaymentQueue {
-    public struct TransactionsPublisher: Combine.Publisher {
+    public struct Publisher: Combine.Publisher {
         public typealias Output = [SKPaymentTransaction]
         public typealias Failure = Swift.Error
         
@@ -41,16 +41,16 @@ extension SKPaymentQueue {
         }
         
         public func receive<S>(subscriber: S) where S : Subscriber, Self.Failure == S.Failure, Self.Output == S.Input {
-            subscriber.receive(subscription: TransactionsSubscription(paymentQueue: queue, desire: desire, next: subscriber))
+            subscriber.receive(subscription: SKPaymentQueue.Subscription(paymentQueue: queue, desire: desire, next: subscriber))
         }
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension SKPaymentQueue.TransactionsPublisher: Equatable {
+extension SKPaymentQueue.Publisher: Equatable {
     public static func == (
-        lhs: SKPaymentQueue.TransactionsPublisher,
-        rhs: SKPaymentQueue.TransactionsPublisher
+        lhs: SKPaymentQueue.Publisher,
+        rhs: SKPaymentQueue.Publisher
     ) -> Bool {
         lhs.queue === rhs.queue
             && lhs.desire == rhs.desire
@@ -59,12 +59,12 @@ extension SKPaymentQueue.TransactionsPublisher: Equatable {
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension SKPaymentQueue {
-    fileprivate final class TransactionsSubscription<S: Subscriber>: NSObject, Combine.Subscription, CustomReflectable, CustomPlaygroundDisplayConvertible
+    fileprivate final class Subscription<S: Subscriber>: NSObject, Combine.Subscription, CustomReflectable, CustomPlaygroundDisplayConvertible
         where
         S.Input == [SKPaymentTransaction],
         S.Failure == Swift.Error
     {
-        typealias Desire = SKPaymentQueue.TransactionsPublisher.Desire
+        typealias Desire = SKPaymentQueue.Publisher.Desire
         
         private let lock = Lock()
         
